@@ -67,23 +67,6 @@ function Header({ setShowForm, showForm }) {
   );
 }
 
-function NewFactForm() {
-  return (
-    <form className="fact-form hidden">
-      <input type="text" placeholder="Share a fact with the world..." />
-      <span>200</span>
-      <input type="text" placeholder="Trustworthy source" />
-      <select>
-        <option value="">Choose category</option>
-        <option value="technology">Technology</option>
-        <option value="science">Science</option>
-        <option alue="finance">Finance</option>
-      </select>
-      <button className="btn btn-large">Post</button>
-    </form>
-  );
-}
-
 const CATEGORIES = [
   { name: "technology", color: "#3b82f6" },
   { name: "science", color: "#16a34a" },
@@ -94,6 +77,83 @@ const CATEGORIES = [
   { name: "history", color: "#f97316" },
   { name: "news", color: "#8b5cf6" },
 ];
+
+function isValidHttpURL(url) {
+  try {
+    const parsedURL = new URL(url);
+    return parsedURL.protocol === "http:" || parsedURL.protocol === "https:";
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+
+function NewFactForm() {
+  const [text, setText] = useState("");
+  const [source, setSource] = useState("");
+  const [category, setCategory] = useState("");
+  const [error, setError] = useState(false);
+  const textLength = 200 - text.length;
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    if (!text || !isValidHttpURL(source) || !category || textLength >= 200) {
+      return setError("Invalid data");
+    }
+    setError("");
+
+    const newFact = {
+      id: Math.round(Math.random() * Number.MAX_SAFE_INTEGER),
+      text: text,
+      source: source,
+      category: category,
+      votesInteresting: 0,
+      votesMindblowing: 0,
+      votesFalse: 0,
+      createdIn: new Date().getFullYear(),
+    };
+    console.log(newFact);
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="fact-form">
+      {error && (
+        <p
+          style={{
+            backgroundColor: "#ef4444",
+            padding: "8px 16px",
+            borderRadius: "8px",
+          }}
+        >
+          {error}
+        </p>
+      )}
+      <input
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        type="text"
+        placeholder="Share a fact with the world..."
+      />
+      <span>{textLength}</span>
+      <input
+        value={source}
+        onChange={(e) => setSource(e.target.value)}
+        type="text"
+        placeholder="Trustworthy source"
+      />
+      <select value={category} onChange={(e) => setCategory(e.target.value)}>
+        <option value="">Choose a category</option>
+        {CATEGORIES.map((cat) => (
+          <option key={cat.name} value={cat.name}>
+            {cat.name.toUpperCase()}
+          </option>
+        ))}
+      </select>
+      <button className="btn btn-large">Post</button>
+    </form>
+  );
+}
 
 function CategoryFilter() {
   return (
