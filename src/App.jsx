@@ -11,7 +11,13 @@ function App() {
   useEffect(() => {
     async function getFacts() {
       setIsLoading(true);
-      const { data: facts } = await supabase.from("facts").select("*");
+      const { data: facts } = await supabase
+        .from("facts")
+        .select("*")
+        .order("votesInteresting", {
+          ascending: false,
+        })
+        .limit(1000);
       setFacts(facts);
       setIsLoading(false);
     }
