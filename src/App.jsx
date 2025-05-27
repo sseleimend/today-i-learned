@@ -6,11 +6,14 @@ import "./style.css";
 function App() {
   const [facts, setFacts] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     async function getFacts() {
+      setIsLoading(true);
       const { data: facts } = await supabase.from("facts").select("*");
       setFacts(facts);
+      setIsLoading(false);
     }
     getFacts();
   }, []);
@@ -23,10 +26,14 @@ function App() {
       )}
       <main className="main">
         <CategoryFilter />
-        <FactList facts={facts} />
+        {isLoading ? <Loader /> : <FactList facts={facts} />}
       </main>
     </>
   );
+}
+
+function Loader() {
+  return <p className="message">Loading...</p>;
 }
 
 function Header({ setShowForm, showForm }) {
