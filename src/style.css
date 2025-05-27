@@ -125,7 +125,8 @@ h1 {
   transition: 0.3s;
 }
 
-.vote-buttons button:hover {
+.vote-buttons button:hover,
+.vote-buttons button:disabled {
   background-color: #1c1917;
 }
 
