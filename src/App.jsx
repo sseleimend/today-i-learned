@@ -217,6 +217,8 @@ function FactList({ facts, setFacts }) {
 
 function Fact({ fact, setFacts }) {
   const [isUpdating, setIsUpdating] = useState(false);
+  const isDisputed =
+    fact.votesInteresting + fact.votesMindblowing < fact.votesFalse;
 
   async function handleVote(columnName) {
     setIsUpdating(true);
@@ -236,6 +238,7 @@ function Fact({ fact, setFacts }) {
   return (
     <li className="fact">
       <p>
+        {isDisputed && <span className="disputed">[⛔️DISPUTED]</span>}{" "}
         {fact.text}
         <a className="source" href={fact.source} target="_blank">
           (Source)
