@@ -36,15 +36,18 @@ const initialFacts = [
 ];
 
 function App() {
+  const [facts, setFacts] = useState(initialFacts);
   const [showForm, setShowForm] = useState(false);
 
   return (
     <>
       <Header setShowForm={setShowForm} showForm={showForm} />
-      {showForm && <NewFactForm />}
+      {showForm && (
+        <NewFactForm setFacts={setFacts} setShowForm={setShowForm} />
+      )}
       <main className="main">
         <CategoryFilter />
-        <FactList />
+        <FactList facts={facts} />
       </main>
     </>
   );
@@ -88,7 +91,7 @@ function isValidHttpURL(url) {
   }
 }
 
-function NewFactForm() {
+function NewFactForm({ setFacts, setShowForm }) {
   const [text, setText] = useState("");
   const [source, setSource] = useState("");
   const [category, setCategory] = useState("");
@@ -113,7 +116,9 @@ function NewFactForm() {
       votesFalse: 0,
       createdIn: new Date().getFullYear(),
     };
-    console.log(newFact);
+    setFacts((facts) => [newFact, ...facts]);
+
+    setShowForm(false);
   }
 
   return (
@@ -177,9 +182,7 @@ function CategoryFilter() {
   );
 }
 
-function FactList() {
-  const facts = initialFacts;
-
+function FactList({ facts }) {
   return (
     <section>
       <ul className="facts-list">
